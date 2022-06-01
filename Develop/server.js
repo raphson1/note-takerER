@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const PORT = 3001;
 const app = express();
+const notes = require('./db/db.json')
+const {v4: uuidv4} = require('uuid');
 
 // Middleware for parsing JSON and urlencoded form data
 app.use(express.json());
@@ -21,3 +23,26 @@ app.get('/notes', (req, res) => {
 app.listen(PORT, () =>{
     console.log(`The server is listerning on ${PORT}`)
 });
+
+app.get('/api/notes', (req, res) => {
+    res.json(notes)
+})
+app.post('/api/notes', (req, res) => {
+    if(req.body){
+      const {title, text} = req.body;
+      notes.push({"id": uuidv4(), "title": title, "text": text});
+      fs.writeFile("./db/db.json", JSON.stringify(notes), err => {
+        if(err){
+          console.log(err)
+        } else{
+          console.log("Note created!!")
+        }
+      })
+      res.status(201).json("Note created succefuly")
+    }
+  })
+
+  app.delete('/api/notes/:id', (req,res) => {
+        console.log(req.params.id)
+      res.status(200).json(req.params.id);
+  })
