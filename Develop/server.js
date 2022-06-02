@@ -46,13 +46,13 @@ app.post('/api/notes', (req, res) => {
     }
   })
 
-  app.delete('/api/notes/:note_id', (req,res) => {
-        const noteId = req.params.id;
-        readFromFile('./db/db.json')
-        .then((data) => JSON.parse(data))
-        .then((json) => {
-            const result = json.filter((note) => note.note_id !== noteId);
-            writeToFile('./db/db.json', result)
-            res.json(`note id: ${noteId} has been deleted `)
-        })
-  })
+  // app.delete('/api/notes/:note_id', (req,res) => {
+  //       const noteId = req.params.id;
+  //       readFromFile('./db/db.json')
+  //       .then((data) => JSON.parse(data))
+  //       .then((json) => {
+  //           const result = json.filter((note) => note.note_id !== noteId);
+  //           writeToFile('./db/db.json', result)
+  //           res.json(`note id: ${noteId} has been deleted `)
+  //       })
+  // })
