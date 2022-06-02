@@ -5,8 +5,12 @@ const PORT = 3001;
 const app = express();
 const notes = require('./db/db.json')
 const {v4: uuidv4} = require('uuid');
+const {
+    readFromFile,
+    readAndAppend,
+    writeToFile,
+  } = require('./helpers/fsUtils');
 
-// Middleware for parsing JSON and urlencoded form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -42,7 +46,13 @@ app.post('/api/notes', (req, res) => {
     }
   })
 
-  app.delete('/api/notes/:id', (req,res) => {
-        console.log(req.params.id)
-      res.status(200).json(req.params.id);
+  app.delete('/api/notes/:note_id', (req,res) => {
+        const noteId = req.params.id;
+        readFromFile('./db/db.json')
+        .then((data) => JSON.parse(data))
+        .then((json) => {
+            const result = json.filter((note) => note.note_id !== noteId);
+            writeToFile('./db/db.json', result)
+            res.json(`note id: ${noteId} has been deleted `)
+        })
   })
