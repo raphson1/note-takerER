@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const PORT = process.env.PORT || 3001;
 const app = express();
-const notes = require('./db/db.json')
+let notes = require('./db/db.json')
 const {v4: uuidv4} = require('uuid');
 const {
     readFromFile,
@@ -46,13 +46,14 @@ app.post('/api/notes', (req, res) => {
     }
   })
 
-  // app.delete('/api/notes/:note_id', (req,res) => {
-  //       const noteId = req.params.id;
-  //       readFromFile('./db/db.json')
-  //       .then((data) => JSON.parse(data))
-  //       .then((json) => {
-  //           const result = json.filter((note) => note.note_id !== noteId);
-  //           writeToFile('./db/db.json', result)
-  //           res.json(`note id: ${noteId} has been deleted `)
-  //       })
-  // })
+  app.delete('/api/notes/:note_id', (req,res) => {
+        const noteId = req.params.note_id;
+        console.log(noteId)
+        readFromFile('./db/db.json')
+        .then((data) => JSON.parse(data))
+        .then((data) => {
+            notes = data.filter((note) => note.id !== noteId);
+            writeToFile('./db/db.json', notes)
+            res.json(notes)
+        })
+  })
